@@ -1,25 +1,31 @@
-import { StyleSheet, Text, View } from 'react-native';
 
 
-import RegisterScreen from './app/screens/Register'
+import * as React from 'react';
+import MainContainer from './app/MainContainer';
+import LoginScreen from './app/screens/LoginScreen';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <RegisterScreen />
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-    </View>
-  );
+function App () {
+    const Stack = createNativeStackNavigator();
+    return (
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                    options={{ title: 'Login' }}
+                />
+                <Stack.Screen
+                    name="Main"
+                    component={MainContainer}
+                    options={{ headerShown: false }}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 }
 
-const styles = StyleSheet.create({
-  // container: {
-  // flex: 1,
-  // backgroundColor: '#fff',
-  // alignItems: 'center',
-  // justifyContent: 'center',
-  // },
-});
 
-
-// export default App;
+export default App;

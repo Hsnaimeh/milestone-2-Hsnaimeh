@@ -6,8 +6,9 @@ export default function Logo() {
         <View style={styles.img}>
 
             <Image
-                source={require('../../assets/icon.png')}
+                source={require('../../assets/bg_top.png')}
                 style={{ width: 300, height: 300 }}
+
             />
         </View>
     )
@@ -15,10 +16,8 @@ export default function Logo() {
 
 
 
-
 const styles = StyleSheet.create({
     img: {
-        paddingTop: 60,
         justifyContent: 'center',
         alignItems: 'center'
 

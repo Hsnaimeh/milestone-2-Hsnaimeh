@@ -4,7 +4,7 @@ import Logo from '../compenents/register/Logo'
 import Welcome from "../compenents/register/Welcome"
 import Input from "../compenents/register/Input"
 
-export default function Register() {
+export default function RegisterScreen() {
     return (
         <View style={styles.container}>
             <Logo/>
