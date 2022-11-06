@@ -5,9 +5,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
 import HomeScreen from './screens/HomeScreen';
-import PatientsScreen from './screens/PatientsScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import UsersList from "./screens/test";
+import PatientsScreen from "./screens/PatientsScreen";
 
 //Screen names
 const homeName = "Home";
@@ -48,7 +47,7 @@ function MainContainer() {
         }}>
 
         <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={patientsName} component={UsersList} />
+        <Tab.Screen name={patientsName} component={PatientsScreen} />
         <Tab.Screen name={settingsName} component={SettingsScreen} />
 
       </Tab.Navigator>
