@@ -8,7 +8,6 @@ export default function Logo() {
             <Image
                 source={require('../../assets/bg_top.png')}
                 style={{ width: 300, height: 300 }}
-
             />
         </View>
     )

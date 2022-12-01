@@ -4,9 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
-import HomeScreen from './screens/HomeScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import PatientsScreen from "./screens/PatientsScreen";
+import HomeScreen from './home/HomeScreen';
+import SettingsScreen from './settings/SettingsScreen';
+import PatientsScreen from "./patients/main/PatientsScreen";
 
 //Screen names
 const homeName = "Home";

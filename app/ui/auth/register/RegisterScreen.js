@@ -1,8 +1,8 @@
 import {StyleSheet, View} from 'react-native';
 
-import Logo from '../compenents/register/Logo'
-import Welcome from "../compenents/register/Welcome"
-import Input from "../compenents/register/Input"
+import Logo from '../../../compenents/register/Logo'
+import Welcome from "../../../compenents/register/Welcome"
+import Input from "../../../compenents/register/Input"
 
 export default function RegisterScreen() {
     return (
