@@ -16,12 +16,20 @@ const LoginScreen = ({ navigation }) => {
                 <Button
                     title="Login"
                     onPress={
-                        () => navigation.navigate('Main', { name: 'Jane' })
-
+                        () => navigation.navigate('MainStack', { name: 'Jane' })
                     }
                 />
             </View>
 
+
+            <View style={styles.btnLogin}>
+                <Button
+                    title="Register"
+                    onPress={
+                        () => navigation.navigate('Register', { name: 'Jane' })
+                    }
+                />
+            </View>
 
         </View>
     );

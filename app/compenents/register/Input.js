@@ -1,8 +1,9 @@
 import {Button, KeyboardAvoidingView, Platform, StyleSheet, TextInput, View} from 'react-native'
 import React from 'react'
 
-export default function Logo() {
-    return (<KeyboardAvoidingView
+export default function Input() {
+    return (
+        <KeyboardAvoidingView
             style={styles.inputGroup}
             behavior={Platform.OS === "ios" ? "padding" : "height"}>
 
