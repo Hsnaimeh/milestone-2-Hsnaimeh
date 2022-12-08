@@ -13,6 +13,9 @@ import WelcomeScreen from "./intro/WelcomeScreen";
 import DetailsPatientScreen from "./patients/details/DetailsPatient";
 import AddPatientScreen from "./patients/add/AddPatientScreen";
 import PatientsScreen from "./patients/main/PatientsScreen";
+import AddRecordScreen from "./patients/records/add/AddRecordScreen";
+import UpdateRecordScreen from "./patients/records/update/UpdateRecordScreen";
+import UpdatePatientScreen from "./patients/update/UpdatePatientScreen";
 
 //Screen names
 const homeName = "Home";
@@ -49,9 +52,9 @@ const PatientsStack = () => {
             <Stack.Screen name="PatientsScreen" component={PatientsScreen}/>
             <Stack.Screen name="PatientDetails" component={DetailsPatientScreen}/>
             <Stack.Screen name="AddPatient" component={AddPatientScreen}/>
-            {/*<Stack.Screen name="UpdatePatient" component={DetailsPatientScreen}/>*/}
-            {/*<Stack.Screen name="AddRecord" component={DetailsPatientScreen}/>*/}
-            {/*<Stack.Screen name="UpdateRecord" component={DetailsPatientScreen}/>*/}
+            <Stack.Screen name="UpdatePatient" component={UpdatePatientScreen}/>
+            <Stack.Screen name="AddRecord" component={AddRecordScreen}/>
+            <Stack.Screen name="UpdateRecord" component={UpdateRecordScreen}/>
         </Stack.Navigator>
     );
 };

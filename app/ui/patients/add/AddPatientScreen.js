@@ -25,6 +25,7 @@ const AddPatientScreen = ({navigation}) => {
 
     }, [buttonPress])
 
+
     const addPatient = async () => {
 
 

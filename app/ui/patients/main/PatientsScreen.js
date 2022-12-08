@@ -3,16 +3,32 @@ import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "
 import React, {useEffect} from "react";
 import {FAB, IconButton, MD3Colors} from "react-native-paper";
 import {RefreshControl} from 'react-native-gesture-handler';
+import {SearchBar} from 'react-native-elements';
 
 const Network = require('../../../constant/Network');
 
 const PatientsScreen = ({navigation}) => {
 
     const [data, setData] = React.useState([])
-    const [patient, setPatient] = React.useState('')
+    // const [patient, setPatient] = React.useState('')
     const [loading, setLoading] = React.useState(false);
-    const [deleteButtonPress, setDeleteButtonPress] = React.useState(false);
+    const [deleteButtonPress, setDeleteButtonPress] = React.useState('');
 
+    const [searchText, setSearchText] = React.useState('');
+    const [filteredData, setFilteredData] = React.useState([]);
+
+
+    const search = (searchText) => {
+        setSearchText(searchText);
+
+        let filteredData = data.filter(function (item) {
+            return item.name.includes(searchText);
+        });
+
+        setFilteredData(filteredData);
+    };
+
+    // var patient1;
 
     useEffect(() => {
         fetchPatientsData()
@@ -21,17 +37,17 @@ const PatientsScreen = ({navigation}) => {
 
     useEffect(() => {
         if (deleteButtonPress) {
-            deletePatient()
+            deletePatient(deleteButtonPress)
         }
-        setDeleteButtonPress(false)
+        // setDeleteButtonPress(false)
 
     }, [deleteButtonPress])
 
 
-    const deletePatient = async () => {
+    const deletePatient = async (patient) => {
 
-        console.log("hishamtest "+patient.toString())
-        await fetch('https://patients-app-api.herokuapp.com/patients/' + patient._id, {
+        console.log("hishamtest " + patient.name)
+        fetch('https://patients-app-api.herokuapp.com/patients/' + patient._id, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -58,7 +74,6 @@ const PatientsScreen = ({navigation}) => {
             .then(response => response.json())
             .then((jsonResponse) => {
                 setLoading(false);
-
                 setData(jsonResponse.data)
             })
             .catch(error => {
@@ -71,6 +86,29 @@ const PatientsScreen = ({navigation}) => {
 
     function isCritical(data) {
         return data.item.condition.toLocaleLowerCase() == "Critical".toLocaleLowerCase();
+    }
+
+    async function confirmationButton1(item) {
+        Alert.alert(
+            "Delete " + item.name + " Patient",
+            "Are sure to remove this patient from the system",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => {
+                        console.log("Cancel Pressed")
+                    },
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    onPress: () => {
+                        console.log("hishamtest confirmationButton1" + item.name)
+                        setDeleteButtonPress(item)
+                    }
+                }
+            ]
+        );
     }
 
     const renderItem = (data) =>
@@ -94,9 +132,23 @@ const PatientsScreen = ({navigation}) => {
                     iconColor={MD3Colors.error50}
                     size={20}
                     onPress={() => {
-                        setPatient(data.item)
 
-                        setDeleteButtonPress(true)
+
+                        confirmationButton1(data.item)
+
+                    }}
+                />
+
+
+                <IconButton
+                    icon={"pen"}
+                    iconColor={"#ca8a00"}
+                    size={20}
+                    onPress={() => {
+
+                        navigation.navigate('UpdatePatient',
+                            {patient: data.item})
+
                     }}
                 />
 
@@ -106,9 +158,20 @@ const PatientsScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
+
+            <SearchBar
+                round={true}
+                lightTheme={true}
+                placeholder="Search..."
+                autoCapitalize='none'
+                autoCorrect={false}
+                onChangeText={search}
+                value={searchText}
+            />
+
             <View>
                 <FlatList
-                    data={data}
+                    data={filteredData && filteredData.length > 0 ? filteredData : data}
                     keyExtractor={item => item._id}
                     refreshing={loading}
 

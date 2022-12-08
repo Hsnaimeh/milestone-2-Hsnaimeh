@@ -1,8 +1,9 @@
-import {Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React from "react";
+import {Alert, Button, FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import React, {useEffect} from "react";
 import {IconButton, MD3Colors} from "react-native-paper";
+import colors from "../../../res/colors";
 
-const DetailsPatientScreen = ({route, navigation}) => {
+const UpdatePatientScreen = ({route, navigation}) => {
 
     const {patient} = route.params;
     const tests = patient.tests
@@ -11,6 +12,56 @@ const DetailsPatientScreen = ({route, navigation}) => {
         return condition.toLocaleLowerCase() == "Critical".toLocaleLowerCase();
     }
 
+    const [name, setName] = React.useState('');
+    const [gender, setGender] = React.useState('');
+    const [phone, setPhone] = React.useState('');
+    const [address, setAddress] = React.useState('');
+
+
+
+    const [buttonPress, setButtonPress] = React.useState(false);
+
+
+    useEffect(() => {
+        if (buttonPress) {
+            updatePatient()
+        }
+        setButtonPress(false)
+
+    }, [buttonPress])
+
+
+    const updatePatient = async () => {
+
+
+        await fetch('https://patients-app-api.herokuapp.com/patients/'+patient._id, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                address: address,
+                phone: phone,
+                gender: gender,
+            })
+
+        }).then((response) => response.json())
+            .then((json) => {
+                if (json._id === undefined) {
+                    console.error(json.message);
+                    Alert.alert("Message", json.message)
+                    return
+                }
+
+                Alert.alert("Message",  " Updated Successfully ")
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     const renderItem = (tests) =>
 
@@ -44,6 +95,18 @@ const DetailsPatientScreen = ({route, navigation}) => {
 
                             }}
                 />
+
+                <IconButton
+                    icon={"pen"}
+                    iconColor={"#ca8a00"}
+                    size={20}
+                    onPress={() => {
+
+                        navigation.navigate('UpdateRecord',
+                            {patient: patient, record: tests.item})
+
+                    }}
+                />
             </View>
         </TouchableOpacity>
 
@@ -75,31 +138,43 @@ const DetailsPatientScreen = ({route, navigation}) => {
                         style={isCritical(patient.condition) ? styles.criticalStatus : styles.normalStatus}>{patient.condition}</Text>
                 </View>
 
-                <View style={styles.label_value}>
+                <View style={styles.containerInput}>
+                    <Text style={styles.label_text}>Name : </Text>
+                    <TextInput style={styles.input}
+                               defaultValue={patient.name}
+                               placeholder="Name"
+
+                               placeholderTextColor={colors.light}
+                               onChangeText={data => setName(data)}/>
+                </View>
+
+                <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Gender : </Text>
-                    <Text style={styles.label_text}>{patient.gender}</Text>
+                    <TextInput style={styles.input}
+                               defaultValue={patient.gender}
+                               placeholder="Gender"
+                               placeholderTextColor={colors.light}
+                               onChangeText={data => setGender(data)}/>
                 </View>
 
-                <View style={styles.label_value}>
+
+                <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Phone : </Text>
-                    <Text style={styles.label_text}>{patient.mobile}</Text>
+                    <TextInput style={styles.input}
+                               defaultValue={patient.mobile}
+                               placeholder="Phone"
+                               placeholderTextColor={colors.light}
+                               onChangeText={data => setPhone(data)}/>
                 </View>
 
-                <View style={styles.label_value}>
+                <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Address : </Text>
-                    <Text style={styles.label_text}>{patient.address}</Text>
+                    <TextInput style={styles.input}
+                               defaultValue={patient.address}
+                               placeholder="Address"
+                               placeholderTextColor={colors.light}
+                               onChangeText={data => setAddress(data)}/>
                 </View>
-
-                <View style={styles.label_value}>
-                    <Text style={styles.label_text}>Birthdate : </Text>
-                    <Text style={styles.label_text}>{patient.birthdate}</Text>
-                </View>
-
-                <View style={styles.label_value}>
-                    <Text style={styles.label_text}>Date Joined : </Text>
-                    <Text style={styles.label_text}>{patient.createdAt}</Text>
-                </View>
-
 
             </View>
 
@@ -138,6 +213,16 @@ const DetailsPatientScreen = ({route, navigation}) => {
                     renderItem={item => renderItem(item)}
                 />
             </View>
+
+            <Button
+                title="Update Patient"
+                onPress={
+                    () => {
+                        setButtonPress(true)
+                    }
+
+                }
+            />
 
         </View>
     )
@@ -219,6 +304,14 @@ const styles = StyleSheet.create({
         padding: 15,
         borderColor: "black",
         fontSize: 18, borderRadius: 20
-    }
+    },
+    containerInput: {
+        width: '50%', padding: 5, flexDirection: "row", justifyContent: "center", alignItems: "center",
+    },
+    input: {
+        width: 150,
+        padding: 3, borderColor: "black", borderWidth: 1, fontSize: 14, borderRadius: 8,
+    },
+
 });
-export default DetailsPatientScreen
+export default UpdatePatientScreen
