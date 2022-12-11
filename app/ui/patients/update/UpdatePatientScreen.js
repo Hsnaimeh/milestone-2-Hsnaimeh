@@ -5,18 +5,17 @@ import colors from "../../../res/colors";
 
 const UpdatePatientScreen = ({route, navigation}) => {
 
-    const {patient} = route.params;
-    const tests = patient.tests
+    const {argsPatient} = route.params;
+    const tests = argsPatient.tests
 
     function isCritical(condition) {
         return condition.toLocaleLowerCase() == "Critical".toLocaleLowerCase();
     }
 
-    const [name, setName] = React.useState('');
-    const [gender, setGender] = React.useState('');
-    const [phone, setPhone] = React.useState('');
-    const [address, setAddress] = React.useState('');
-
+    const [name, setName] = React.useState(argsPatient.name);
+    const [gender, setGender] = React.useState(argsPatient.gender);
+    const [phone, setPhone] = React.useState(argsPatient.phone);
+    const [address, setAddress] = React.useState(argsPatient.address);
 
 
     const [buttonPress, setButtonPress] = React.useState(false);
@@ -34,7 +33,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
     const updatePatient = async () => {
 
 
-        await fetch('https://patients-app-api.herokuapp.com/patients/'+patient._id, {
+        await fetch('https://patients-app-api.herokuapp.com/patients/' + argsPatient._id, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -50,12 +49,11 @@ const UpdatePatientScreen = ({route, navigation}) => {
         }).then((response) => response.json())
             .then((json) => {
                 if (json._id === undefined) {
-                    console.error(json.message);
                     Alert.alert("Message", json.message)
                     return
                 }
 
-                Alert.alert("Message",  " Updated Successfully ")
+                Alert.alert("Message", " Updated Successfully ")
 
             })
             .catch((error) => {
@@ -66,7 +64,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
     const renderItem = (tests) =>
 
         <TouchableOpacity onPress={() => navigation.navigate('UpdateRecord',
-            {patient: patient, record: tests.item})}>
+            {patient: argsPatient, record: tests.item})}>
             <View style={{
                 flex: 1,
                 flexDirection: "row",
@@ -125,23 +123,23 @@ const UpdatePatientScreen = ({route, navigation}) => {
                 }}>
                     <Image
                         style={styles.tinyLogo}
-                        source={{uri: patient.photo}}/>
+                        source={{uri: argsPatient.image}}/>
 
 
                     <View style={{flexDirection: "column"}}>
 
-                        <Text style={styles.label_text}>{patient.name}</Text>
+                        <Text style={styles.label_text}>{argsPatient.name}</Text>
 
                     </View>
 
                     <Text
-                        style={isCritical(patient.condition) ? styles.criticalStatus : styles.normalStatus}>{patient.condition}</Text>
+                        style={isCritical(argsPatient.condition) ? styles.criticalStatus : styles.normalStatus}>{argsPatient.condition}</Text>
                 </View>
 
                 <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Name : </Text>
                     <TextInput style={styles.input}
-                               defaultValue={patient.name}
+                               defaultValue={argsPatient.name}
                                placeholder="Name"
 
                                placeholderTextColor={colors.light}
@@ -151,7 +149,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
                 <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Gender : </Text>
                     <TextInput style={styles.input}
-                               defaultValue={patient.gender}
+                               defaultValue={argsPatient.gender}
                                placeholder="Gender"
                                placeholderTextColor={colors.light}
                                onChangeText={data => setGender(data)}/>
@@ -161,7 +159,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
                 <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Phone : </Text>
                     <TextInput style={styles.input}
-                               defaultValue={patient.mobile}
+                               defaultValue={argsPatient.mobile}
                                placeholder="Phone"
                                placeholderTextColor={colors.light}
                                onChangeText={data => setPhone(data)}/>
@@ -170,7 +168,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
                 <View style={styles.containerInput}>
                     <Text style={styles.label_text}>Address : </Text>
                     <TextInput style={styles.input}
-                               defaultValue={patient.address}
+                               defaultValue={argsPatient.address}
                                placeholder="Address"
                                placeholderTextColor={colors.light}
                                onChangeText={data => setAddress(data)}/>

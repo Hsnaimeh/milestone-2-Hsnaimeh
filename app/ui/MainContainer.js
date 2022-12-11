@@ -49,7 +49,7 @@ const PatientsStack = () => {
                 headerShown: false
             }
         }>
-            <Stack.Screen name="PatientsScreen" component={PatientsScreen}/>
+            <Stack.Screen name="PatientsStack" component={PatientsScreen}/>
             <Stack.Screen name="PatientDetails" component={DetailsPatientScreen}/>
             <Stack.Screen name="AddPatient" component={AddPatientScreen}/>
             <Stack.Screen name="UpdatePatient" component={UpdatePatientScreen}/>

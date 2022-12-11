@@ -1,9 +1,22 @@
-import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    Alert,
+    FlatList,
+    Image,
+    Pressable,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {FAB, IconButton, MD3Colors} from "react-native-paper";
-import {RefreshControl} from 'react-native-gesture-handler';
 import {SearchBar} from 'react-native-elements';
+import {BottomSheetModal, BottomSheetModalProvider,} from "@gorhom/bottom-sheet";
+import {useFocusEffect} from '@react-navigation/native';
+
+import {AntDesign, Entypo} from "@expo/vector-icons";
 
 const Network = require('../../../constant/Network');
 
@@ -13,20 +26,40 @@ const PatientsScreen = ({navigation}) => {
     // const [patient, setPatient] = React.useState('')
     const [loading, setLoading] = React.useState(false);
     const [deleteButtonPress, setDeleteButtonPress] = React.useState('');
+    const [isOpen, setIsOpen] = React.useState(false);
 
     const [searchText, setSearchText] = React.useState('');
     const [filteredData, setFilteredData] = React.useState([]);
 
+    const [filterCondition, setFilterCondition] = React.useState("All");
 
     const search = (searchText) => {
         setSearchText(searchText);
 
         let filteredData = data.filter(function (item) {
-            return item.name.includes(searchText);
+            return item.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase());
         });
 
         setFilteredData(filteredData);
     };
+
+    function onFilterChanged(condition) {
+
+        let filteredData = data.filter(function (item) {
+            if (condition === "All") {
+                return filteredData
+            }
+            return item.condition.toLocaleLowerCase().includes(condition.toLocaleLowerCase());
+        });
+
+        setFilteredData(filteredData)
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => bottomSheetModalRef.current?.close()
+        }, [])
+    );
 
     // var patient1;
 
@@ -43,6 +76,12 @@ const PatientsScreen = ({navigation}) => {
 
     }, [deleteButtonPress])
 
+    useEffect(() => {
+        onFilterChanged(filterCondition)
+        // setDeleteButtonPress(false)
+
+    }, [filterCondition])
+
 
     const deletePatient = async (patient) => {
 
@@ -58,7 +97,6 @@ const PatientsScreen = ({navigation}) => {
 
                 Alert.alert("Message", json.message)
                 fetchPatientsData()
-
             })
             .catch((error) => {
                 console.error(error);
@@ -83,9 +121,8 @@ const PatientsScreen = ({navigation}) => {
             )
     }
 
-
     function isCritical(data) {
-        return data.item.condition.toLocaleLowerCase() == "Critical".toLocaleLowerCase();
+        return data.item.condition.toLocaleLowerCase() === "Critical".toLocaleLowerCase();
     }
 
     async function confirmationButton1(item) {
@@ -103,7 +140,6 @@ const PatientsScreen = ({navigation}) => {
                 {
                     text: "Yes",
                     onPress: () => {
-                        console.log("hishamtest confirmationButton1" + item.name)
                         setDeleteButtonPress(item)
                     }
                 }
@@ -114,9 +150,10 @@ const PatientsScreen = ({navigation}) => {
     const renderItem = (data) =>
 
         <TouchableOpacity onPress={() => navigation.navigate('PatientDetails',
-            {patient: data.item})
+            {argsPatient: data.item})
         }>
-            <View style={styles.card}>
+
+            <View style={[styles.card,{backgroundColor: isOpen ? "rgba(221,221,221,0.55)" : "white"}]}>
                 <Image
                     style={styles.tinyLogo}
                     source={{
@@ -147,7 +184,7 @@ const PatientsScreen = ({navigation}) => {
                     onPress={() => {
 
                         navigation.navigate('UpdatePatient',
-                            {patient: data.item})
+                            {argsPatient: data.item})
 
                     }}
                 />
@@ -156,50 +193,161 @@ const PatientsScreen = ({navigation}) => {
         </TouchableOpacity>
 
 
+    const bottomSheetModalRef = useRef(null)
+    const snapPoints = ["25%", "48%", "75%"]
+
+
+    function handlePresentFilter() {
+        if (!isOpen) {
+            bottomSheetModalRef.current?.present();
+            setTimeout(() => {
+                setIsOpen(true);
+            }, 100);
+        } else {
+            bottomSheetModalRef.current?.close();
+            setTimeout(() => {
+                setIsOpen(false);
+            }, 100);
+        }
+
+    }
+
     return (
-        <View style={styles.container}>
 
-            <SearchBar
-                round={true}
-                lightTheme={true}
-                placeholder="Search..."
-                autoCapitalize='none'
-                autoCorrect={false}
-                onChangeText={search}
-                value={searchText}
-            />
+        <BottomSheetModalProvider>
+            <View style={[
+                styles.container,
+                {
+                    backgroundColor: isOpen ? "rgba(221,221,221,0.55)" : "white",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 3,
+                    },
+                    shadowOpacity: 0.29,
+                    shadowRadius: 4.65,
 
-            <View>
-                <FlatList
-                    data={filteredData && filteredData.length > 0 ? filteredData : data}
-                    keyExtractor={item => item._id}
-                    refreshing={loading}
+                    elevation: 7
+                },
+            ]}>
 
-                    refreshControl={
-                        <RefreshControl refreshing={loading} onRefresh={fetchPatientsData}/>
+
+                <View style={{flexDirection: "row"}}>
+
+
+                    <View style={{flex: 0.9,}}>
+                        <SearchBar
+                            inputStyle={{backgroundColor: isOpen ? "rgba(221,221,221,0.55)" : "white"}}
+                            containerStyle={{
+                                backgroundColor: isOpen ? "rgba(221,221,221,0.55)" : "white",
+                                borderWidth: 1, borderRadius: 5}}
+                            inputContainerStyle={{backgroundColor: isOpen ? "rgba(221,221,221,0.55)" : "white"}}
+                            placeholderTextColor={'#g5g5g5'}
+                            round={true}
+                            lightTheme={true}
+                            placeholder="Search..."
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            onChangeText={search}
+                            value={searchText}
+                        />
+                    </View>
+                    <View style={{flex: 0.2}}>
+
+                        <IconButton
+                            icon={"filter"} iconColor={isOpen ? "#0582b9" : "#333333"} size={40}
+                            onPress={handlePresentFilter}
+                        />
+                    </View>
+
+                </View>
+
+                <View>
+                    <FlatList
+                        data={filteredData && filteredData.length > 0 ? filteredData : data}
+                        keyExtractor={item => item._id}
+                        refreshing={loading}
+                        scrollEnabled={!isOpen}
+                        refreshControl={
+                            <RefreshControl refreshing={loading} onRefresh={fetchPatientsData}/>
+                        }
+                        renderItem={item => renderItem(item)}
+                    />
+
+                </View>
+
+
+                <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    onPress={() => navigation.navigate('AddPatient')
                     }
-                    renderItem={item => renderItem(item)}
                 />
+
+
+                <BottomSheetModal
+                    ref={bottomSheetModalRef}
+                    index={1}
+                    snapPoints={snapPoints}
+                    backgroundStyle={{
+                        borderRadius: 50,
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+
+                        elevation: 5,
+                    }}
+                >
+
+                    <View style={styles.bottomContentContainer}>
+                        <Text style={styles.bottomTitle}>Filter</Text>
+
+
+                        <Pressable style={styles.row} onPress={() => setFilterCondition("All")}>
+                            <Text style={styles.subtitle}>All</Text>
+                            {filterCondition === "All" ? (
+                                <AntDesign name="checkcircle" size={24} color="#4A98E9"/>
+                            ) : (
+                                <Entypo name="circle" size={24} color="#56636F"/>
+                            )}
+                        </Pressable>
+                        <Pressable style={styles.row} onPress={() => setFilterCondition("Critical")}>
+                            <Text style={styles.subtitle}>Critical</Text>
+                            {filterCondition === "Critical" ? (
+                                <AntDesign name="checkcircle" size={24} color="#4A98E9"/>
+                            ) : (
+                                <Entypo name="circle" size={24} color="#56636F"/>
+                            )}
+                        </Pressable>
+
+                        <Pressable style={styles.row} onPress={() => setFilterCondition("Normal")}>
+                            <Text style={styles.subtitle}>Normal</Text>
+                            {filterCondition === "Normal" ? (
+                                <AntDesign name="checkcircle" size={24} color="#4A98E9"/>
+                            ) : (
+                                <Entypo name="circle" size={24} color="#56636F"/>
+                            )}
+                        </Pressable>
+
+                    </View>
+
+                </BottomSheetModal>
 
             </View>
 
-
-            <FAB
-                icon="plus"
-                style={styles.fab}
-                onPress={() => navigation.navigate('AddPatient')
-                }
-            />
-
-
-        </View>
+        </BottomSheetModalProvider>
     );
 
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "gray"
     },
     tinyLogo: {
         width: 50,
@@ -244,19 +392,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 7,
         paddingVertical: 5
     },
-    // fab: {
-    //     position: 'absolute',
-    //     width: 40,
-    //     height: 40,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     right: 20,
-    //     fontSize:10,
-    //     bottom: 20,
-    //     backgroundColor: '#03A9F4',
-    //     borderRadius: 15,
-    //     elevation: 8
-    // },
     fabIcon: {
         fontSize: 40,
         color: 'white'
@@ -268,6 +403,33 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: "#ddd",
 
+    },
+    bottomContentContainer: {
+        flex: 1,
+        alignItems: "center",
+        paddingHorizontal: 15
+    },
+    bottomTitle: {
+        fontWeight: "900",
+        letterSpacing: .5,
+        fontSize: 16,
+    },
+    title: {
+        fontWeight: "900",
+        letterSpacing: 0.5,
+        fontSize: 16,
+    },
+    subtitle: {
+        color: "#101318",
+        fontSize: 14,
+        fontWeight: "bold",
+    },
+    row: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginVertical: 10,
     },
 });
 export default PatientsScreen

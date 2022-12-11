@@ -1,15 +1,48 @@
-import {Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React from "react";
+import {Button, FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useEffect} from "react";
 import {IconButton, MD3Colors} from "react-native-paper";
+import getTypeLabel from "../../../../_test_/RecordTypeUtil";
+import getDateFormat from "../../../getDateFormat";
 
 const DetailsPatientScreen = ({route, navigation}) => {
 
-    const {patient} = route.params;
-    const tests = patient.tests
+    const {argsPatient} = route.params;
+
+    // const tests = patient.tests
 
     function isCritical(condition) {
+        if (condition === undefined) {
+            return false
+
+        }
         return condition.toLocaleLowerCase() == "Critical".toLocaleLowerCase();
     }
+
+    const [loading, setLoading] = React.useState(false);
+    const [patient, setPatient] = React.useState([])
+
+    const fetchPatient = async () => {
+        setLoading(true);
+
+        // Network.BASE_URL+Network.BASE_URL.GET_PATIENTS
+        fetch("https://patients-app-api.herokuapp.com/patients/" + argsPatient._id)
+            .then(response => response.json())
+            .then((jsonResponse) => {
+                setLoading(false);
+                setPatient(jsonResponse.data)
+            })
+            .catch(error => {
+                    setLoading(false);
+                    console.log(error)
+                }
+            )
+    }
+
+
+    useEffect(() => {
+        fetchPatient()
+
+    }, [])
 
 
     const renderItem = (tests) =>
@@ -21,7 +54,7 @@ const DetailsPatientScreen = ({route, navigation}) => {
                 flexDirection: "row",
                 marginHorizontal: 8,
                 marginTop: 8,
-                backgroundColor: 'white',
+                backgroundColor: tests.index === 0 ? "#95d3fb" : "#fff",
                 shadowColor: "#000",
                 shadowOffset: {
                     width: 0,
@@ -32,7 +65,21 @@ const DetailsPatientScreen = ({route, navigation}) => {
 
                 elevation: 5
             }}>
-                <Text style={{margin: 16, flex: .6}}>{tests.item.type}</Text>
+
+                {/*style={[styles.text, touched && invalid ? styles.textinvalid : styles.textvalid]}*/}
+                {/*<Text style={{ opacity: "blue" == "blue" ? 1 : 0, textAlign:"right" }}>Retry</Text>*/}
+
+                <View style={{
+                    flex: .6,
+                    flexDirection: "column"
+                }}>
+                    <Text style={{margin: 16, flex: .03}}>{getTypeLabel(tests.item.type)}</Text>
+                    <Text style={{
+                        marginStart: 16,
+                        marginBottom: 16,
+                        flex: 1
+                    }}>{"Date: " + getDateFormat(tests.item.date)}</Text>
+                </View>
                 <Text style={{margin: 16, flex: .3}}>{tests.item.reading}</Text>
 
                 <IconButton style={{flex: .1}}
@@ -96,8 +143,8 @@ const DetailsPatientScreen = ({route, navigation}) => {
                 </View>
 
                 <View style={styles.label_value}>
-                    <Text style={styles.label_text}>Date Joined : </Text>
-                    <Text style={styles.label_text}>{patient.createdAt}</Text>
+                    <Text style={styles.label_text}>Last Update : </Text>
+                    <Text style={styles.label_text}>{getDateFormat(patient.createdAt)}</Text>
                 </View>
 
 
@@ -133,8 +180,12 @@ const DetailsPatientScreen = ({route, navigation}) => {
 
             <View style={{flex: 1}}>
                 <FlatList
-                    data={tests}
+                    data={patient.tests}
                     keyExtractor={item => item._id}
+                    refreshing={loading}
+                    refreshControl={
+                        <RefreshControl refreshing={loading} onRefresh={fetchPatient}/>
+                    }
                     renderItem={item => renderItem(item)}
                 />
             </View>

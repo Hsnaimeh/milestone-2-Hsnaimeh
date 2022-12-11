@@ -11,13 +11,14 @@ const UpdateRecordScreen = ({route, navigation}) => {
 
 
     // const [type, setType] = React.useState('');
-    const [reading, setReading] = React.useState('');
 
-    const [newTest, setNewTest] = React.useState([])
     const [buttonPress, setButtonPress] = React.useState(false);
 
     const [dropTypeOpen, setDropTypeOpen] = React.useState(false);
-    const [typeValue, setTypeValue] = React.useState(null);
+
+    const [reading, setReading] = React.useState(record.reading);
+    const [typeValue, setTypeValue] = React.useState(record.type);
+
     const [dropType, setDropType] = React.useState([
         {label: "Blood Pressure", value: "blood_pressure"},
         {label: "Respiratory Rate", value: "respiratory_rate"},
@@ -29,6 +30,7 @@ const UpdateRecordScreen = ({route, navigation}) => {
 
     const onTypeOpen = useCallback(() => {
     }, []);
+
 
     useEffect(() => {
 
@@ -58,9 +60,6 @@ const UpdateRecordScreen = ({route, navigation}) => {
 
         }).then((response) => response.json())
             .then((json) => {
-
-
-                setNewTest(json)
 
                 Alert.alert("Message", "Record Update Successfully ", [
 
@@ -105,7 +104,7 @@ const UpdateRecordScreen = ({route, navigation}) => {
                                     <DropDownPicker
                                         style={styles.dropdown}
                                         open={dropTypeOpen}
-                                        value={record.type} //typeValue
+                                        value={typeValue} //typeValue
                                         items={dropType}
                                         setOpen={setDropTypeOpen}
                                         setValue={setTypeValue}
