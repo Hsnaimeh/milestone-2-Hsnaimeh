@@ -149,7 +149,7 @@ const PatientsScreen = ({navigation}) => {
 
     const renderItem = (data) =>
 
-        <TouchableOpacity onPress={() => navigation.navigate('PatientDetails',
+        <TouchableOpacity onPress={() => navigation.navigate('Patient Details',
             {argsPatient: data.item})
         }>
 
@@ -183,7 +183,7 @@ const PatientsScreen = ({navigation}) => {
                     size={20}
                     onPress={() => {
 
-                        navigation.navigate('UpdatePatient',
+                        navigation.navigate('Update Patient',
                             {argsPatient: data.item})
 
                     }}
@@ -280,7 +280,7 @@ const PatientsScreen = ({navigation}) => {
                 <FAB
                     icon="plus"
                     style={styles.fab}
-                    onPress={() => navigation.navigate('AddPatient')
+                    onPress={() => navigation.navigate('Add Patient')
                     }
                 />
 

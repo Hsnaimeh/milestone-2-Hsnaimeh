@@ -18,9 +18,9 @@ import UpdateRecordScreen from "./patients/records/update/UpdateRecordScreen";
 import UpdatePatientScreen from "./patients/update/UpdatePatientScreen";
 
 //Screen names
-const homeName = "Home";
-const patientsName = "Patients";
-const settingsName = "Setting";
+const homeName = "Home ";
+const patientsName = "Patients ";
+const settingsName = "Setting ";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,10 +31,10 @@ const HomeStack = () => {
         <Stack.Navigator screenOptions={
             {
                 tabBarShowLabel: false,
-                headerShown: false
+                headerShown: true
             }
         }>
-            <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+            <Stack.Screen name="Home" component={HomeScreen}/>
             <Stack.Screen name="WelcomeScreen" component={WelcomeScreen}/>
         </Stack.Navigator>
     );
@@ -46,27 +46,29 @@ const PatientsStack = () => {
         <Stack.Navigator screenOptions={
             {
                 tabBarShowLabel: false,
-                headerShown: false
+                headerShown: true
             }
         }>
-            <Stack.Screen name="PatientsStack" component={PatientsScreen}/>
-            <Stack.Screen name="PatientDetails" component={DetailsPatientScreen}/>
-            <Stack.Screen name="AddPatient" component={AddPatientScreen}/>
-            <Stack.Screen name="UpdatePatient" component={UpdatePatientScreen}/>
-            <Stack.Screen name="AddRecord" component={AddRecordScreen}/>
-            <Stack.Screen name="UpdateRecord" component={UpdateRecordScreen}/>
+            <Stack.Screen name="Patients" component={PatientsScreen}/>
+            <Stack.Screen name="Patient Details" component={DetailsPatientScreen}/>
+            <Stack.Screen name="Add Patient" component={AddPatientScreen}/>
+            <Stack.Screen name="Update Patient" component={UpdatePatientScreen}/>
+            <Stack.Screen name="Add Record" component={AddRecordScreen}/>
+            <Stack.Screen name="Update Record" component={UpdateRecordScreen}/>
         </Stack.Navigator>
     );
 };
 
 function MainContainer() {
     return (
-        <NavigationContainer independent={true}>
+        <NavigationContainer  independent={true} >
             <Tab.Navigator
                 initialRouteName={homeName}
                 screenOptions={({route}) => ({
                     activeTintColor: 'blue',
                     inactiveTintColor: 'grey',
+                    tabBarShowLabel: true,
+                    headerShown: false,
                     labelStyle: {paddingBottom: 10, fontSize: 10},
                     style: {padding: 10, height: 70},
                     tabBarIcon: ({focused, color, size}) => {

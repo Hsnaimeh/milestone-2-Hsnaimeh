@@ -145,7 +145,7 @@ const AddPatientScreen = ({navigation}) => {
                                 setButtonPress(true)
 
 
-                                // navigation.navigate('PatientDetails',
+                                // navigation.navigate('Patient Details',
                                 //     {patient: null})
                             }
 

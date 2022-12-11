@@ -25,7 +25,12 @@ const AuthStack = () => {
 function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator screenOptions={
+                {
+                    tabBarShowLabel: false,
+                    headerShown: false
+                }
+            }>
                 <Stack.Screen
                     name="AuthStack"
                     component={AuthStack}

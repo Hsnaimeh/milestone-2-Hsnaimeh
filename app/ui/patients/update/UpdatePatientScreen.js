@@ -63,7 +63,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
 
     const renderItem = (tests) =>
 
-        <TouchableOpacity onPress={() => navigation.navigate('UpdateRecord',
+        <TouchableOpacity onPress={() => navigation.navigate('Update Record',
             {patient: argsPatient, record: tests.item})}>
             <View style={{
                 flex: 1,
@@ -100,7 +100,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
                     size={20}
                     onPress={() => {
 
-                        navigation.navigate('UpdateRecord',
+                        navigation.navigate('Update Record',
                             {patient: patient, record: tests.item})
 
                     }}
@@ -190,7 +190,7 @@ const UpdatePatientScreen = ({route, navigation}) => {
                         onPress={
                             () => {
                                 navigation.navigate(
-                                    'AddRecord',
+                                    'Add Record',
                                     {patient: patient}
                                 )
                             }

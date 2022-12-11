@@ -47,7 +47,7 @@ const DetailsPatientScreen = ({route, navigation}) => {
 
     const renderItem = (tests) =>
 
-        <TouchableOpacity onPress={() => navigation.navigate('UpdateRecord',
+        <TouchableOpacity onPress={() => navigation.navigate('Update Record',
             {patient: patient, record: tests.item})}>
             <View style={{
                 flex: 1,

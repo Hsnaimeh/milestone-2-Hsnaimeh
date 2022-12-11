@@ -139,7 +139,7 @@ const UpdateRecordScreen = ({route, navigation}) => {
                         onPress={
                             () => {
                                 setButtonPress(true)
-                                // navigation.navigate('PatientDetails',
+                                // navigation.navigate('Patient Details',
                                 //     {patient: null})
                             }
 
