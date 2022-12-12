@@ -164,7 +164,7 @@ const DetailsPatientScreen = ({route, navigation}) => {
                         onPress={
                             () => {
                                 navigation.navigate(
-                                    'AddRecord',
+                                    'Add Record',
                                     {patient: patient}
                                 )
                             }
