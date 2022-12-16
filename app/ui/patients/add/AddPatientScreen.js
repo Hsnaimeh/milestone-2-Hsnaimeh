@@ -11,7 +11,7 @@ const AddPatientScreen = ({navigation}) => {
     const [gender, setGender] = React.useState('');
     const [address, setAddress] = React.useState('');
     const [birthdate, setBirthdate] = React.useState('');
-    const [image, setImage] = React.useState('');
+    const [image, setImage] = React.useState("https://source.unsplash.com/random/75×75/?person,face" + new Date().getTime());
 
     const [newPatient, setNewPatient] = React.useState([])
     const [buttonPress, setButtonPress] = React.useState(false);
@@ -61,7 +61,7 @@ const AddPatientScreen = ({navigation}) => {
                 }
 
                 setNewPatient(json)
-                console.error(json);
+                // console.error(json);
 
                 Alert.alert("Message", json.name + " Created Successfully ")
 
@@ -87,7 +87,7 @@ const AddPatientScreen = ({navigation}) => {
 
                     <Image
                         style={styles.tinyLogo}
-                        source={{uri: "https://source.unsplash.com/random/75×75/?person,face" + new Date().getTime()}}/>
+                        source={{uri: image}}/>
 
                     <View style={styles.containerInput}>
                         <TextInput style={styles.input} placeholder="Name"

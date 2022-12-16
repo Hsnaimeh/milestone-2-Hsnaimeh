@@ -169,10 +169,7 @@ const PatientsScreen = ({navigation}) => {
                     iconColor={MD3Colors.error50}
                     size={20}
                     onPress={() => {
-
-
                         confirmationButton1(data.item)
-
                     }}
                 />
 
